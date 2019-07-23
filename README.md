@@ -82,7 +82,6 @@ export class CanAccessDirective implements OnInit, OnDestroy {
 ```
 
 
-# Deploy github server
 # angular-cli-ghpages
 
 ## Installation & Setup
