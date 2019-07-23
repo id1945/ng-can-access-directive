@@ -1,27 +1,102 @@
 # NgCanAccessDirective
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.1.0.
+```
+git clone https://github.com/id1945/ng-can-access-directive.git
+cd ng-can-access-directive
+npm install
+ng serve --open
+```
 
-## Development server
+# Code
+```html
+<ul>
+  <li *appCanAccess="'view.user'">
+    <h2><a target="_blank" rel="noopener" href="#">Check permit user</a></h2>
+  </li>
+  <li *appCanAccess="['view.user','view.role']">
+    <h2><a target="_blank" rel="noopener" href="#">Check permit user + role</a></h2>
+  </li>
+  <li *appCanAccess="['view.admin','view.dashboard']">
+    <h2><a target="_blank" rel="noopener" href="#">Check permit admin + dashborad</a></h2>
+  </li>
+</ul>
+```
+```javascript
+import { Directive, OnInit, OnDestroy, Input, TemplateRef, ViewContainerRef } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { AuthorizedService } from './authorized.service';
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+@Directive({
+  selector: '[appCanAccess]'
+})
+export class CanAccessDirective implements OnInit, OnDestroy {
+  @Input()
+  public appCanAccess: string | string[];
+  private permission$: Subscription;
 
-## Code scaffolding
+  constructor(
+    private templateRef: TemplateRef<any>,
+    private viewContainer: ViewContainerRef,
+    private authService: AuthorizedService
+  ) { }
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+  ngOnDestroy() {
+    this.permission$.unsubscribe();
+  }
 
-## Build
+  ngOnInit() {
+    this.applyPermission();
+  }
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+  private applyPermission(): void {
+    // this.permission$ = this.authService.checkAuthorization(this.appCanAccess).subscribe((authorized: any) => {
+    //     if (authorized.code === '00') {
+    //       this.viewContainer.createEmbeddedView(this.templateRef);
+    //     } else {
+    //       this.viewContainer.clear();
+    //     }
+    //   });
+    // ========= Demo api begin ===========
+    if (typeof this.appCanAccess === 'object') {
+      // Được hiển thị màn hình user và role
+      if (this.appCanAccess.filter(x => x === 'view.user' || x === 'view.role').length > 0) {
+        this.viewContainer.createEmbeddedView(this.templateRef);
+      } else {
+        // không cho phép hiển thị
+        this.viewContainer.clear();
+      }
+    }
+    if (typeof this.appCanAccess === 'string') {
+      // Được hiển thị màn hình user
+      if (this.appCanAccess === 'view.user') {
+        this.viewContainer.createEmbeddedView(this.templateRef);
+      } else {
+        // không cho phep hiển thị
+        this.viewContainer.clear();
+      }
+    }
+    // =========== End demo ================
+  }
 
-## Running unit tests
+}
+```
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
 
-## Running end-to-end tests
+# Deploy github server
+# angular-cli-ghpages
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+## Installation & Setup
+````
+npm i angular-cli-ghpages --save-dev
+````
 
-## Further help
+## Usage
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+Usage With Angular Cli 6 Or Higher
+````
+ng build --prod
+npx ngh --dir=dist/<project-name>
+````
+```html
+<base href="/ng-can-access-directive/">
+```
