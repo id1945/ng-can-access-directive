@@ -1,6 +1,6 @@
 import { Directive, OnInit, OnDestroy, Input, TemplateRef, ViewContainerRef } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { AuthorizedService } from '../services';
+import { AuthorizedService } from './authorized.service';
 
 @Directive({
   selector: '[appCanAccess]'

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import 'rxjs/add/observable/of';
 
-import { BaseService } from '../../core/services/base.service';
+import { BaseService } from './base.service';
 
 @Injectable()
 export class AuthorizedService {
